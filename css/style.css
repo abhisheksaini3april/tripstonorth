@@ -1312,3 +1312,36 @@
         padding-bottom: 20px;
         padding-top: 20px;
     }
+
+    /* logo styling */
+
+.logo {
+    max-width: 200px; /* never bigger than 200px */
+    width: 100%; /* shrink on smaller screens */
+    height: auto; /* keep aspect ratio */
+}
+
+.site-header {
+        background-color: white; /* dark background for contrast */
+        padding: 15px 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .site-logo {
+        max-width: 200px; /* adjust size here */
+        height: auto;
+    }
+
+  .footer {
+    font-size: 14px;
+  }
+  .footer-social a {
+    font-size: 16px;
+    transition: color 0.3s;
+  }
+  .footer-social a:hover {
+    color: #0d6efd; /* Bootstrap primary color */
+  }
