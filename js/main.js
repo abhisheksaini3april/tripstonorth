@@ -156,3 +156,92 @@ Special Request: ${message}`;
 
     window.open(whatsappURL, "_blank");
   });
+
+
+
+  const prices = {
+    oneway: {
+        "Delhi to Haridwar": { sedan: 3300, ertiga: 4500, innova: 6000 },
+        "Chandigarh to Haridwar": { sedan: 3500, ertiga: 4500, innova: 6000 },
+        "Chandigarh to Delhi": { sedan: 3800, ertiga: 5000, innova: 6500 },
+        "Haridwar to Mussoorie": { sedan: 2500, ertiga: 3500, innova: 4500 },
+        "Haridwar to Vikas Nagar": { sedan: 3200, ertiga: 4000, innova: 5000 }
+    },
+    daily: {
+        "Haridwar to Mussoorie Darshan by Bus": { bus: 700 }
+    },
+    roundtrip: {
+        "Haridwar to Delhi": { sedan: 6000, ertiga: 8000, innova: 11000 },
+        "Haridwar to Chandigarh": { sedan: 6000, ertiga: 8000, innova: 11000 },
+        "Haridwar to Kaichi Dham Darshan": { sedan: 9000, ertiga: 12000, innova: 15000 }
+    }
+};
+
+const tripTypeSelect = document.getElementById("tripType");
+const locationSelect = document.getElementById("location");
+const carTypeSelect = document.getElementById("carType");
+const priceDisplay = document.getElementById("priceDisplay");
+const bookBtn = document.getElementById("bookBtn");
+
+tripTypeSelect.addEventListener("change", () => {
+    locationSelect.innerHTML = '<option value="">Select Location</option>';
+    carTypeSelect.innerHTML = '<option value="">Select Car Type</option>';
+    carTypeSelect.disabled = true;
+    priceDisplay.textContent = "";
+    bookBtn.style.display = "none";
+
+    const tripType = tripTypeSelect.value;
+    if (tripType) {
+        locationSelect.disabled = false;
+        Object.keys(prices[tripType]).forEach(loc => {
+            let option = document.createElement("option");
+            option.value = loc;
+            option.textContent = loc;
+            locationSelect.appendChild(option);
+        });
+    } else {
+        locationSelect.disabled = true;
+    }
+});
+
+locationSelect.addEventListener("change", () => {
+    carTypeSelect.innerHTML = '<option value="">Select Car Type</option>';
+    priceDisplay.textContent = "";
+    bookBtn.style.display = "none";
+
+    const tripType = tripTypeSelect.value;
+    const location = locationSelect.value;
+    if (location) {
+        carTypeSelect.disabled = false;
+        Object.keys(prices[tripType][location]).forEach(car => {
+            let option = document.createElement("option");
+            option.value = car;
+            option.textContent = car.charAt(0).toUpperCase() + car.slice(1);
+            carTypeSelect.appendChild(option);
+        });
+    } else {
+        carTypeSelect.disabled = true;
+    }
+});
+
+carTypeSelect.addEventListener("change", () => {
+    const tripType = tripTypeSelect.value;
+    const location = locationSelect.value;
+    const carType = carTypeSelect.value;
+    if (carType) {
+        const price = prices[tripType][location][carType];
+        priceDisplay.textContent = `Price: ₹${price}`;
+        bookBtn.style.display = "block";
+    } else {
+        priceDisplay.textContent = "";
+        bookBtn.style.display = "none";
+    }
+});
+
+bookBtn.addEventListener("click", () => {
+    const tripType = tripTypeSelect.value;
+    const location = locationSelect.value;
+    const carType = carTypeSelect.value;
+    const price = prices[tripType][location][carType];
+    window.open(`https://wa.me/6396044262?text=Booking%20Request%3A%20${tripType}%20-%20${location}%20-%20${carType}%20-%20Price%3A%20₹${price}`, "_blank");
+});

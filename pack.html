@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cab Fare Booking</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+        margin: 0;
+        padding: 0;
+    }
+    .booking-card {
+        background: white;
+        max-width: 500px;
+        margin: 40px auto;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+    }
+    select, button {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+    }
+    button {
+        background: #28a745;
+        color: white;
+        cursor: pointer;
+        border: none;
+        font-weight: bold;
+    }
+    button:hover {
+        background: #218838;
+    }
+    .car-preview {
+        text-align: center;
+        margin-top: 20px;
+    }
+    .car-preview img {
+        max-width: 100%;
+        height: 200px;
+        object-fit: contain;
+    }
+    .price {
+        text-align: center;
+        font-size: 20px;
+        margin: 15px 0;
+        font-weight: bold;
+        color: #333;
+    }
+</style>
+</head>
+<body>
+
+<div class="booking-card">
+    <h2>Cab Fare Booking</h2>
+
+    <select id="tripType">
+        <option value="">Select Trip Type</option>
+        <option value="oneway">One Way</option>
+        <option value="round">Round Trip</option>
+        <option value="daily">Daily Service</option>
+    </select>
+
+    <select id="location" disabled>
+        <option value="">Select Location</option>
+    </select>
+
+    <select id="carType" disabled>
+        <option value="">Select Car Type</option>
+        <option value="sedan" data-img="https://cdn-icons-png.flaticon.com/512/743/743922.png" data-price="1200">Sedan</option>
+        <option value="suv" data-img="https://cdn-icons-png.flaticon.com/512/743/743914.png" data-price="1800">SUV</option>
+        <option value="luxury" data-img="https://cdn-icons-png.flaticon.com/512/743/743931.png" data-price="3000">Luxury</option>
+    </select>
+
+    <div class="car-preview">
+        <img id="carImage" src="https://cdn-icons-png.flaticon.com/512/743/743922.png" alt="Car Preview">
+    </div>
+
+    <div class="price" id="price"></div>
+
+    <button id="bookNow" style="display:none;">Book Now</button>
+</div>
+
+<script>
+    const tripTypeSelect = document.getElementById("tripType");
+    const locationSelect = document.getElementById("location");
+    const carTypeSelect = document.getElementById("carType");
+    const carImage = document.getElementById("carImage");
+    const priceDisplay = document.getElementById("price");
+    const bookNowBtn = document.getElementById("bookNow");
+
+    const locations = {
+        oneway: ["Delhi → Jaipur", "Delhi → Agra", "Delhi → Chandigarh"],
+        round: ["Delhi ↔ Jaipur", "Delhi ↔ Agra", "Delhi ↔ Chandigarh"],
+        daily: ["Delhi → Gurgaon", "Delhi → Noida", "Delhi → Ghaziabad"]
+    };
+
+    tripTypeSelect.addEventListener("change", () => {
+        const tripType = tripTypeSelect.value;
+        locationSelect.innerHTML = '<option value="">Select Location</option>';
+        if(tripType && locations[tripType]) {
+            locations[tripType].forEach(loc => {
+                const option = document.createElement("option");
+                option.value = loc;
+                option.textContent = loc;
+                locationSelect.appendChild(option);
+            });
+            locationSelect.disabled = false;
+        } else {
+            locationSelect.disabled = true;
+        }
+        carTypeSelect.disabled = true;
+        priceDisplay.textContent = "";
+        bookNowBtn.style.display = "none";
+    });
+
+    locationSelect.addEventListener("change", () => {
+        if(locationSelect.value) {
+            carTypeSelect.disabled = false;
+        } else {
+            carTypeSelect.disabled = true;
+        }
+        priceDisplay.textContent = "";
+        bookNowBtn.style.display = "none";
+    });
+
+    carTypeSelect.addEventListener("change", () => {
+        const selectedCar = carTypeSelect.options[carTypeSelect.selectedIndex];
+        const imgSrc = selectedCar.getAttribute("data-img");
+        const price = selectedCar.getAttribute("data-price");
+
+        if(imgSrc) {
+            carImage.src = imgSrc;
+        }
+
+        if(price) {
+            priceDisplay.textContent = `Price: ₹${price}`;
+            bookNowBtn.style.display = "block";
+        } else {
+            priceDisplay.textContent = "";
+            bookNowBtn.style.display = "none";
+        }
+    });
+
+    bookNowBtn.addEventListener("click", () => {
+        const tripType = tripTypeSelect.options[tripTypeSelect.selectedIndex].text;
+        const location = locationSelect.value;
+        const carType = carTypeSelect.value;
+        const price = priceDisplay.textContent;
+
+        const whatsappMsg = `Booking Details:
+Trip Type: ${tripType}
+Location: ${location}
+Car: ${carType}
+${price}`;
+        
+        const encodedMsg = encodeURIComponent(whatsappMsg);
+        window.open(`https://wa.me/916396044262?text=${encodedMsg}`, "_blank");
+    });
+</script>
+
+</body>
+</html>
